@@ -13,7 +13,7 @@ from postgre import create_connection
 from dotenv import load_dotenv
 import os
 
-load_dotenv(r"C:\Users\e.gustavo.santos.GRUPO_A&C\Documents\Projetos\8 - etl_performance\.env")
+load_dotenv(r"C:\Users\e.gustavo.santos.GRUPO_A&C\Documents\Github\etls_robbyson_aec\.env")
 
 def normalize(rows):
 

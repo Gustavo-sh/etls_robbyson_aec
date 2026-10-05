@@ -3,7 +3,7 @@ from utils import write_log
 from dotenv import load_dotenv
 import os
 
-load_dotenv(r"C:\Users\e.gustavo.santos.GRUPO_A&C\Documents\Projetos\8 - etl_performance\.env")
+load_dotenv(r"C:\Users\e.gustavo.santos.GRUPO_A&C\Documents\Github\etls_robbyson_aec\.env")
 
 SQLSERVER_CONNECTION = (
     "DRIVER={ODBC Driver 18 for SQL Server};"

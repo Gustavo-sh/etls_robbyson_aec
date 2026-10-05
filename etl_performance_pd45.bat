@@ -1,5 +1,5 @@
 @echo off
 
-cd /d "C:\Users\e.gustavo.santos.GRUPO_A&C\Documents\Projetos\8 - etl_performance"
+cd /d "C:\Users\e.gustavo.santos.GRUPO_A&C\Documents\Github\etls_robbyson_aec"
 
 python -u main.py "PD45"
