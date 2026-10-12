@@ -79,41 +79,43 @@ def run_specific_range_performance(range_start, range_end, indicators_pg, indica
 
     for offset in range(range_start, 0, -1):
         dia = None
-        try:
 
-            dia = date.today() - timedelta(days=offset)
+        dia = date.today() - timedelta(days=offset)
 
-            if offset == range_end-1:
+        if offset == range_end-1:
+            break
+
+        write_log(f"Offset: {offset} - {environ}...")
+
+        for _ in range(3):
+
+            try:
+        
+                inicio = time.time()
+                sync_specific_day_performance(dia, CURSOR_PG, indicators_pg, indicators_sql, environ)
+                fim = time.time()
+                write_log(f"{int(fim - inicio)} segundos para processar o dia {dia} - {environ} ids {indicators_sql or ""}...")
                 break
 
-            write_log(f"Offset: {offset} - {environ}...")
-            
-            inicio = time.time()
-            sync_specific_day_performance(dia, CURSOR_PG, indicators_pg, indicators_sql, environ)
-            fim = time.time()
-
-            write_log(f"{int(fim - inicio)} segundos para processar o dia {dia} - {environ} ids {indicators_sql or ""}...")
-        except Exception as e:
-            write_log(f"Erro ({e}) ao processar o dia {dia} - {environ}...")
-            if "unexpectedly" in str(e):
+            except Exception as e:
+                write_log(f"Erro ({e}) ao processar o dia {dia} - {environ}...")
                 write_log(f"Tunnel aberto: {tunnel_aberto()}")
                 try:
                     CURSOR_PG.close()
                     CONN_PG.close()
-                    CONN_PG = create_connection(host, port, database, username, password)
-                    CURSOR_PG = CONN_PG.cursor()
+                    CONN_PG, CURSOR_PG = test_connection(host, port, database, username, password, environ)
                 except Exception as e:
                     write_log(f"Erro ao tentar recriar conexão que foi fechada pelo servidor: {str(e)}") 
-            CURSOR_SQL.execute("""
-            UPDATE dbo.LogReplicacaoRby
-            SET DataFim = GETDATE(),
-                Erro = ?
-            WHERE Data = ?
-            AND Objeto = 'rby.performance'
-            AND Ambiente = ?
-            and DataInicio = (SELECT max(DataInicio) from LogReplicacaoRby where Data = ? AND Objeto = 'rby.performance' AND Ambiente = ?)
-            """, (str(e), dia, environ, dia, environ))
-            continue
+                CURSOR_SQL.execute("""
+                UPDATE dbo.LogReplicacaoRby
+                SET DataFim = GETDATE(),
+                    Erro = ?
+                WHERE Data = ?
+                AND Objeto = 'rby.performance'
+                AND Ambiente = ?
+                and DataInicio = (SELECT max(DataInicio) from LogReplicacaoRby where Data = ? AND Objeto = 'rby.performance' AND Ambiente = ?)
+                """, (str(e), dia, environ, dia, environ))
+                continue
 
     try:
         CURSOR_PG.close()

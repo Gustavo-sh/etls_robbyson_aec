@@ -33,7 +33,7 @@ ETLS = {
     },
 
     "PD45": {
-        "range_start": 47
+        "range_start": 29
         ,"procedures": [
             "dbo.sp_Ins_matriz",
             "dbo.SPR_Voucher_Quantidade",
