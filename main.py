@@ -5,7 +5,9 @@ from etl_sync import run_specific_range_performance, run_specific_range_notifica
 from validation import exec_validation
 import os
 import sys
+from dotenv import load_dotenv
 
+load_dotenv(r"C:\Users\e.gustavo.santos.GRUPO_A&C\Documents\GitHub\etls_robbyson_aec\.env")
 
 ETLS = {
     "PD15": {
@@ -54,7 +56,7 @@ ETLS = {
     },
 
     "PDVAR": {
-        "range_start": 53
+        "range_start": 65
     },
 
     "ND15": {

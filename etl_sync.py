@@ -13,7 +13,7 @@ from postgre import create_connection
 from dotenv import load_dotenv
 import os
 
-load_dotenv(r"C:\Users\e.gustavo.santos.GRUPO_A&C\Documents\Github\etls_robbyson_aec\.env")
+load_dotenv(r"C:\Users\e.gustavo.santos.GRUPO_A&C\Documents\GitHub\etls_robbyson_aec\.env")
 
 def normalize(rows):
 
@@ -42,7 +42,7 @@ def normalize(rows):
     return result
 
 def test_connection(host, port, database, username, password, environ):
-    write_log("Iniciando teste de conexão do postgre...")
+    write_log(f"Iniciando teste de conexão do postgre - {environ}...")
     for i in range(5):
         try:
             conn = create_connection(host, port, database, username, password)
@@ -63,13 +63,16 @@ def test_connection(host, port, database, username, password, environ):
             write_log(f"Erro no teste de conexão número {i}, erro: {e}...")
             time.sleep(10)
     write_log("Todos os testes de conexão falharam, finalizando a etl.")
-    raise RuntimeError("Tunnel não abriu, ou está inconsistente.")
+    raise RuntimeError("Tunnel não abriu, ou está inconsistente.") 
 
 def run_specific_range_performance(range_start, range_end, indicators_pg, indicators_sql, host, port, database, username, password, environ):
     try:
-        # CONN_PG = create_connection(host, port, database, username, password)
-        # CURSOR_PG = CONN_PG.cursor()
-        CONN_PG, CURSOR_PG = test_connection(host, port, database, username, password, environ)
+        
+        if environ == "AEC":
+            CONN_PG, CURSOR_PG = test_connection(host, port, database, username, password, environ)
+        else:
+            CONN_PG = create_connection(host, port, database, username, password)
+            CURSOR_PG = CONN_PG.cursor()
     except Exception as e:
         write_log(f"Erro ao criar conexão postgre: {str(e)} - {environ}...")
         return
